@@ -1,0 +1,1008 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Botastico public API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://botastico-api-staging-3qrwuust2a-nw.a.run.app",
+      "description": "Staging server"
+    },
+    {
+      "url": "https://botastico-api-production-3qrwuust2a-nw.a.run.app",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/v1/agents": {
+      "get": {
+        "summary": "Get a list of agents",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "agent_ids",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "List of agent IDs to filter the result (optional)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new conversational agent",
+        "description": "Create a new conversational agent with an optional knowledge base.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_name": {
+                    "type": "string",
+                    "description": "The name of the agent"
+                  },
+                  "source_text": {
+                    "type": "string",
+                    "description": "The source text of the agent"
+                  },
+                  "source_urls": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of source URLs"
+                  },
+                  "chunk_size": {
+                    "type": "integer",
+                    "description": "Size of the chunks",
+                    "minimum": 100,
+                    "maximum": 2000,
+                    "default": 400
+                  },
+                  "chunk_overlap": {
+                    "type": "integer",
+                    "description": "Size of the chunk overlap",
+                    "minimum": 50,
+                    "maximum": 1000,
+                    "default": 0
+                  },
+                  "openai_api_key": {
+                    "type": "string",
+                    "description": "OpenAI API key"
+                  },
+                  "model_name": {
+                    "type": "string",
+                    "description": "Name of the model",
+                    "enum": ["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"],
+                    "default": "gpt-3.5-turbo"
+                  },
+                  "temperature": {
+                    "type": "number",
+                    "description": "Temperature of the model",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "default": 0
+                  },
+                  "max_response_tokens": {
+                    "type": "integer",
+                    "description": "Maximum number of response tokens",
+                    "minimum": 0,
+                    "maximum": 2048,
+                    "default": 800
+                  },
+                  "stop": {
+                    "type": "string",
+                    "description": "Stop parameter for the model"
+                  },
+                  "script": {
+                    "type": "string",
+                    "description": "Script for the agent"
+                  },
+                  "assistant_name": {
+                    "type": "string",
+                    "description": "Name of the assistant"
+                  },
+                  "intro": {
+                    "type": "object",
+                    "description": "Introduction for the agent",
+                    "default": {"en": "How can I help you?"}
+                  },
+                  "sitelogo_url_or_svg": {
+                    "type": "string",
+                    "description": "URL or SVG for the site logo"
+                  },
+                  "url_loader": {
+                    "type": "string",
+                    "description": "URL loader",
+                    "enum": ["unstructured", "selenium", "webbase"],
+                    "default": "unstructured"
+                  }
+                },
+                "required": ["agent_name"]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Agent created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "agent_id": {
+                      "type": "string",
+                      "description": "The id of the created agent"
+                    },
+                    "status": {
+                      "type": "string",
+                      "description": "The status of the request"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agents/{agent_id}": {
+      "put": {
+        "summary": "Update an agent",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID of the agent to update"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAgentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agent updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes an agent",
+        "operationId": "deleteAgent",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the agent to be deleted"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent marked as deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Agent marked as deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Agent not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Internal server error"
+                    },
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+  },
+  "/v1/agent/{agent_id}/interaction": {
+    "parameters": [
+      {
+        "in": "path",
+        "name": "agent_id",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The ID of the agent"
+      }
+    ],
+    "post": {
+      "summary": "Endpoint to handle agent interactions",
+      "description": "This endpoint allows users to interact with a conversational agent.",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/InteractionRequest"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Successful interaction",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InteractionResponse"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Bad request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Forbidden",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Agent not found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "Internal server error",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Error"
+              }
+            }
+          }
+        }
+      }
+    },
+    "options": {
+      "summary": "Handle CORS preflight requests",
+      "responses": {
+        "200": {
+          "description": "Successful preflight response",
+          "headers": {
+            "Access-Control-Allow-Origin": {
+              "schema": {
+                "type": "string"
+              },
+              "description": "Access-Control-Allow-Origin header"
+            },
+            "Access-Control-Allow-Methods": {
+              "schema": {
+                "type": "string"
+              },
+              "description": "Access-Control-Allow-Methods header"
+            },
+            "Content-Type": {
+              "schema": {
+                "type": "string"
+              },
+              "description": "Content-Type header"
+            }
+          }
+        }
+      }
+    }
+  },
+  "/v1/agents/{agent_id}/kb/file": {
+    "post": {
+      "summary": "Upload a file to the agent's knowledge base.",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "agent_id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "multipart/form-data": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "file": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "The file was successfully uploaded and processed.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "kbdoc_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "There was an issue with the request, No file part in the request, No selected file, or Unsupported file type.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "kbdoc_id": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "There was a server error, Error creating kbdoc, Failed to upload file, Failed to extract kbdoc or Failed to process kbdoc.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  },
+                  "kbdoc_id": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "403": {
+          "description": "Unauthorized access."
+        }
+      }
+    }
+  },
+  "/v1/agents/{agent_id}/kb/urls/scrape": {
+    "post": {
+      "summary": "Scrape URLs and add them to the knowledge base.",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "agent_id",
+          "required": true,
+          "description": "The ID of the agent",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "requestBody": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "The URLs to be scraped"
+                },
+                "loader_type": {
+                  "type": "string",
+                  "enum": [
+                    "unstructured",
+                    "selenium",
+                    "webbase"
+                  ],
+                  "description": "The type of the loader to be used for scraping"
+                }
+              },
+              "required": [
+                "urls"
+              ]
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "URLs were successfully scraped and added to the knowledge base",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "A message about the status of the operation"
+                  },
+                  "data": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "kbdoc_id": {
+                          "type": "string",
+                          "description": "The ID of the created KB doc"
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "The status of the scraping operation"
+                        },
+                        "error": {
+                          "type": "string",
+                          "description": "The error message if the scraping operation failed"
+                        }
+                      },
+                      "required": [
+                        "kbdoc_id",
+                        "status"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "message",
+                  "data"
+                ]
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid request data",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "An error message"
+                  }
+                },
+                "required": [
+                  "message"
+                ]
+              }
+            }
+          }
+        },
+        "500": {
+          "description": "An error occurred while scraping URLs",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "description": "An error message"
+                  }
+                },
+                "required": [
+                  "message"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+"components": {
+  "securitySchemes": {
+    "ApiKeyAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"
+    }
+  },
+  "schemas": {
+    "UpdateAgentRequest": {
+      "type": "object",
+      "properties": {
+        "agent_name": {
+          "type": "string"
+        },
+        "chunk_size": {
+          "type": "integer"
+        },
+        "chunk_overlap": {
+          "type": "integer"
+        },
+        "model_name": {
+          "type": "string"
+        },
+        "temperature": {
+          "type": "number"
+        },
+        "max_response_tokens": {
+          "type": "integer"
+        },
+        "stop": {
+          "type": "string"
+        },
+        "script": {
+          "type": "string"
+        },
+        "assistant_name": {
+          "type": "string"
+        },
+        "intro": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "sitelogo_url_or_svg": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "SuccessResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "InteractionRequest": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string",
+          "description": "The user prompt"
+        },
+        "history": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/HistoryItem"
+          },
+          "description": "List of history items"
+        },
+        "model_name": {
+          "type": "string",
+          "description": "The name of the model"
+        },
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "The temperature for generating responses"
+        },
+        "max_response_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The maximum number of response tokens"
+        },
+        "context_ratio_limit": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 0.7,
+          "description": "The context ratio limit"
+        },
+        "dfp": {
+          "type": "string",
+          "description": "The DFP value"
+        }
+      },
+      "required": [
+        "prompt"
+      ]
+    },
+    "HistoryItem": {
+      "type": "object",
+      "properties": {
+        "role": {
+          "type": "string",
+          "description": "The role of the history item"
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the history item"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ]
+    },
+    "InteractionResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The ID of the response"
+        },
+        "object": {
+          "type": "string",
+          "description": "The object type"
+        },
+        "created_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The created timestamp of the response"
+        },
+        "model": {
+          "type": "string",
+          "description": "The model used for the response"
+        },
+        "usage": {
+          "type": "object",
+          "description": "The usage statistics"
+        },
+        "finish_reason": {
+          "type": "string",
+          "description": "The finish reason of the response"
+        },
+        "response_message": {
+          "type": "string",
+          "description": "The response message"
+        },
+        "received_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The received timestamp of the response"
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "created_timestamp",
+        "model",
+        "usage",
+        "finish_reason",
+        "response_message",
+        "received_timestamp"
+      ]
+    },  
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "AgentListResponse": {
+      "type": "array",
+      "items": {
+        "$ref": "#/components/schemas/AgentInfo"
+      },
+      "description": "List of agents"
+    },
+    "AgentInfo": {
+      "type": "object",
+      "properties": {
+        "agent_id": {
+          "type": "string",
+          "description": "The ID of the agent"
+        },
+        "parameters": {
+          "type": "object",
+          "description": "Agent parameters",
+          "properties": {
+            "agent_name": {
+              "type": "string"
+            },
+            "chunk_size": {
+              "type": "integer",
+              "default": 400
+            },
+            "chunk_overlap": {
+              "type": "integer",
+              "default": 0
+            },
+            "openai_api_key": {
+              "type": "string"
+            },
+            "model_name": {
+              "type": "string",
+              "enum": ["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"],
+              "default": "gpt-3.5-turbo"
+            },
+            "temperature": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "default": 0
+            },
+            "max_response_tokens": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 800
+            },
+            "stop": {
+              "type": "string"
+            },
+            "script": {
+              "type": "string"
+            },
+            "assistant_name": {
+              "type": "string"
+            },
+            "intro": {
+              "type": "object",
+              "properties": {
+                "en": {
+                  "type": "string"
+                }
+              }
+            },
+            "sitelogo_url_or_svg": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "description": "The status of the agent"
+            }
+          }
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/FileInfo"
+          },
+          "description": "List of uploaded files"
+        },
+        "urls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/ScrapedUrlInfo"
+          },
+          "description": "List of scraped URLs"
+        }
+      }
+    },
+    "FileInfo": {
+      "type": "object",
+      "properties": {
+        "kbdoc_id": {
+          "type": "string",
+          "description": "The ID of the file"
+        },
+        "filename": {
+          "type": "string",
+          "description": "The name of the file"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the file was created"
+        }
+      }
+    },
+    "ScrapedUrlInfo": {
+      "type": "object",
+      "properties": {
+        "kbdoc_id": {
+          "type": "string",
+          "description": "The ID of the scraped URL"
+        },
+        "url": {
+          "type": "string",
+          "description": "The URL"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the URL was scraped"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "The status of the request"
+        },
+        "message": {
+          "type": "string",
+          "description": "The error message"
+        }
+      }
+    }
+  }
+}
+}
