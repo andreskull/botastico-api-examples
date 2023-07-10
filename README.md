@@ -2,7 +2,7 @@
 
 ## Botastico API Specification
 
-https://botastico-public-api-swagger-ui-3qrwuust2a-nw.a.run.app/#/
+https://botastico-production-public-api-swagger-ui-3qrwuust2a-nw.a.run.app
 
 ## Use cases
 ### Unity Software recent earnings analysis agent
