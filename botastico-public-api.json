@@ -345,7 +345,7 @@
         }
       }
   },
-  "/v1/agent/{agent_id}/interaction": {
+  "/v1/agents/{agent_id}/interaction": {
     "parameters": [
       {
         "in": "path",
