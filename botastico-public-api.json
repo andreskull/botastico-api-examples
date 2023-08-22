@@ -154,6 +154,11 @@
                     "description": "Introduction for the agent",
                     "default": {"en": "How can I help you?"}
                   },
+                  "default_locale": {
+                    "type": "string",
+                    "description": "Default language code for the agent",
+                    "default": "en"
+                  },
                   "sitelogo_url_or_svg": {
                     "type": "string",
                     "description": "URL or SVG for the site logo"
@@ -981,6 +986,10 @@
             "type": "string"
           }
         },
+        "default_locale": {
+          "type": "string",
+          "description": "Default language code for the agent"
+        },
         "sitelogo_url_or_svg": {
           "type": "string"
         },
@@ -1179,6 +1188,11 @@
                   "type": "string"
                 }
               }
+            },
+            "default_locale": {
+              "type": "string",
+              "description": "Default language code for the agent",
+              "default": "en"
             },
             "sitelogo_url_or_svg": {
               "type": "string"
