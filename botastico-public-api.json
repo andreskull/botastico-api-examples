@@ -1099,6 +1099,13 @@
           "type": "string",
           "description": "The response message"
         },
+        "reference_kbdoc_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The response message"
+        },
         "received_timestamp": {
           "type": "string",
           "format": "date-time",
@@ -1113,6 +1120,7 @@
         "usage",
         "finish_reason",
         "response_message",
+        "reference_kbdoc_ids",
         "received_timestamp"
       ]
     },  
