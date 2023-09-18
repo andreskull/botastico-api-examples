@@ -1104,7 +1104,7 @@
           "items": {
             "type": "string"
           },
-          "description": "The response message"
+          "description": "Reference KB doc ids"
         },
         "received_timestamp": {
           "type": "string",
