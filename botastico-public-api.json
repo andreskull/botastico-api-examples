@@ -378,13 +378,26 @@
       "summary": "Get the interaction history for a specific agent",
       "parameters": [
         {
-          "in": "path",
-          "name": "agent_id",
-          "required": true,
+          "in": "query",
+          "name": "page",
+          "required": false,
           "schema": {
-            "type": "string"
+            "type": "integer",
+            "default": 1,
+            "minimum": 1
           },
-          "description": "The ID of the agent"
+          "description": "Page number for pagination"
+        },
+        {
+          "in": "query",
+          "name": "page_size",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "default": "DEFAULT_PAGE_SIZE", 
+            "minimum": 1
+          },
+          "description": "Number of items to retrieve per page"
         }
       ],
       "tags": [
