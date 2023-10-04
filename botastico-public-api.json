@@ -604,6 +604,15 @@
                 "schema": {
                     "type": "string"
                 }
+            },
+            {
+                "in": "query",
+                "name": "kbdoc_ids",
+                "required": false,
+                "description": "A comma-separated list of kbdoc IDs to retrieve. If not provided, all kbdocs for the agent will be retrieved.",
+                "schema": {
+                    "type": "string"
+                }
             }
         ],
         "tags": [
@@ -627,6 +636,18 @@
                                     },
                                     "is_indexed": {
                                         "type": "boolean"
+                                    },
+                                    "agent_id": {
+                                        "type": "string"
+                                    },
+                                    "filename": {
+                                        "type": "string"
+                                    },
+                                    "source_url": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
                                     }
                                 }
                             }
@@ -858,7 +879,9 @@
           "description": "Successful operation",
           "content": {
             "text/plain": {
-              "type": "string"
+              "schema": {
+                "type": "string"
+                }
             }
           }
         },
