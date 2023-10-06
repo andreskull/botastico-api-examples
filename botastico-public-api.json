@@ -958,6 +958,66 @@
       }
     }
   },
+  "/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap": {
+    "get": {
+      "summary": "Retrieve the sitemap from the specified scrapedomain",
+      "parameters": [
+        {
+          "name": "agent_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the agent",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "scrapedomain_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the scrapedomain",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "tags": [
+        "Crawl/Scrape"
+      ],
+      "responses": {
+        "200": {
+          "description": "Successfully retrieved the sitemap",
+          "content": {
+            "application/xml": {
+              "example": "<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'><url><loc>http://www.example.com/</loc></url></urlset>",
+              "schema": {
+                "type": "string",
+                "format": "xml"
+              }
+            }
+          }
+        },
+        "404": {
+          "description": "Sitemap or document not found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "message": "Sitemap not found!"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "/agents/{agent_id}/scrapedomains": {
     "post": {
       "summary": "Create Scrapedomain",
