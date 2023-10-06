@@ -903,6 +903,61 @@
       }
     }
   },
+  "/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap_url": {
+    "get": {
+      "summary": "Get URLs from sitemaps",
+      "parameters": [
+        {
+          "name": "agent_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the agent",
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "scrapedomain_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the scrapedomain",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "tags": [
+        "Crawl/Scrape"
+    ],
+      "responses": {
+        "200": {
+          "description": "Successful operation",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+                }
+            }
+          }
+        },
+        "404": {
+          "description": "Document not found",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "/agents/{agent_id}/scrapedomains": {
     "post": {
       "summary": "Create Scrapedomain",
