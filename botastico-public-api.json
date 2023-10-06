@@ -903,7 +903,7 @@
       }
     }
   },
-  "/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap_url": {
+  "/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap_urls": {
     "get": {
       "summary": "Get URLs from sitemaps",
       "parameters": [
