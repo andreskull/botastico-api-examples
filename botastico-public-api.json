@@ -848,7 +848,7 @@
       }
     }
   },
-  "/agents/{agent_id}/scrapedomains/{scrapedomain_id}/crawl": {
+  "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}/crawl": {
     "get": {
       "summary": "Crawl URLs",
       "parameters": [
@@ -903,7 +903,7 @@
       }
     }
   },
-  "/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap_urls": {
+  "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap_urls": {
     "get": {
       "summary": "Get URLs from sitemaps",
       "parameters": [
@@ -958,7 +958,7 @@
       }
     }
   },
-  "/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap": {
+  "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap": {
     "get": {
       "summary": "Retrieve the sitemap from the specified scrapedomain",
       "parameters": [
@@ -1018,7 +1018,7 @@
       }
     }
   },
-  "/agents/{agent_id}/scrapedomains": {
+  "/v1/agents/{agent_id}/scrapedomains": {
     "post": {
       "summary": "Create Scrapedomain",
       "parameters": [
@@ -1209,7 +1209,7 @@
       }
     }
   },
-  "/agents/{agent_id}/scrapedomains/{scrapedomain_id}": {
+  "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}": {
     "put": {
       "summary": "Update Scrapedomain",
       "parameters": [
@@ -1484,195 +1484,6 @@
         },
         "500": {
           "description": "Error deleting document",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "/v1/agents/{agent_id}/scrapedomains": {
-    "get": {
-      "summary": "Get all Scrapedomains",
-      "parameters": [
-        {
-          "name": "agent_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the agent",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "tags": [
-        "Crawl/Scrape"
-    ],
-      "responses": {
-        "200": {
-          "description": "Successful operation",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "agent_id": {
-                      "type": "string"
-                    },
-                    "domain_url": {
-                      "type": "string",
-                      "format": "url"
-                    },
-                    "info_email": {
-                      "type": "string",
-                      "format": "email"
-                    },
-                    "sitemap_url_exclude_strings": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "url_exclude_strings": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "404": {
-          "description": "No scrapedomains found for this agent",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Error fetching data",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "post": {
-      "summary": "Create a new Scrapedomain",
-      "parameters": [
-        {
-          "name": "agent_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the agent",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "tags": [
-        "Crawl/Scrape"
-    ],
-      "requestBody": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "domain_url": {
-                  "type": "string",
-                  "format": "url",
-                  "description": "URL of the domain to be scraped"
-                },
-                "info_email": {
-                  "type": "string",
-                  "format": "email",
-                  "description": "Email associated with the domain"
-                },
-                "sitemap_url_exclude_strings": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "description": "List of strings to exclude from the sitemap URLs"
-                },
-                "url_exclude_strings": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "description": "List of strings to exclude from the crawled URLs"
-                }
-              }
-            }
-          }
-        }
-      },
-      "responses": {
-        "200": {
-          "description": "Successful operation",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "scrapedomain_id": {
-                    "type": "string",
-                    "description": "ID of the created scrapedomain"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "400": {
-          "description": "Validation error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Error creating document",
           "content": {
             "application/json": {
               "schema": {
