@@ -1788,7 +1788,7 @@
           "type": "string",
           "description": "The finish reason of the response"
         },
-        "response_message": {
+        "answer": {
           "type": "string",
           "description": "The response message"
         },
