@@ -869,6 +869,16 @@
           "schema": {
             "type": "string"
           }
+        },
+        {
+          "name": "timeout",
+          "in": "query",
+          "required": false,
+          "description": "The timeout for the crawl in seconds, default is 180 seconds",
+          "schema": {
+            "type": "integer",
+            "default": 180
+          }
         }
       ],
       "tags": [
