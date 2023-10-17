@@ -38,7 +38,7 @@
         ],
         "tags": [
           "Agents"
-      ],
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -77,7 +77,7 @@
         "description": "Create a new conversational agent with an optional knowledge base.",
         "tags": [
           "Agents"
-      ],
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -120,7 +120,12 @@
                   "model_name": {
                     "type": "string",
                     "description": "Name of the model",
-                    "enum": ["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"],
+                    "enum": [
+                      "gpt-3.5-turbo",
+                      "gpt-3.5-turbo-16k",
+                      "gpt-4",
+                      "gpt-4-32k"
+                    ],
                     "default": "gpt-3.5-turbo"
                   },
                   "temperature": {
@@ -152,7 +157,9 @@
                   "intro": {
                     "type": "object",
                     "description": "Introduction for the agent",
-                    "default": {"en": "How can I help you?"}
+                    "default": {
+                      "en": "How can I help you?"
+                    }
                   },
                   "default_locale": {
                     "type": "string",
@@ -166,11 +173,17 @@
                   "url_loader": {
                     "type": "string",
                     "description": "URL loader",
-                    "enum": ["unstructured", "selenium", "webbase"],
+                    "enum": [
+                      "unstructured",
+                      "selenium",
+                      "webbase"
+                    ],
                     "default": "unstructured"
                   }
                 },
-                "required": ["agent_name"]
+                "required": [
+                  "agent_name"
+                ]
               }
             }
           },
@@ -225,7 +238,7 @@
         "summary": "Update an agent",
         "tags": [
           "Agents"
-      ],
+        ],
         "parameters": [
           {
             "in": "path",
@@ -295,7 +308,7 @@
         "operationId": "deleteAgent",
         "tags": [
           "Agents"
-      ],
+        ],
         "parameters": [
           {
             "in": "path",
@@ -361,768 +374,353 @@
           }
         }
       }
-  },
-  "/v1/agents/{agent_id}/interactions": {
-    "parameters": [
-      {
-        "in": "path",
-        "name": "agent_id",
-        "required": true,
-        "schema": {
-          "type": "string"
-        },
-        "description": "The ID of the agent"
-      }
-    ],
-    "get": {
-      "summary": "Get the interaction history for a specific agent",
+    },
+    "/v1/agents/{agent_id}/interactions": {
       "parameters": [
         {
-          "in": "query",
-          "name": "page",
-          "required": false,
+          "in": "path",
+          "name": "agent_id",
+          "required": true,
           "schema": {
-            "type": "integer",
-            "default": 1,
-            "minimum": 1
+            "type": "string"
           },
-          "description": "Page number for pagination"
-        },
-        {
-          "in": "query",
-          "name": "page_size",
-          "required": false,
-          "schema": {
-            "type": "integer",
-            "default": "DEFAULT_PAGE_SIZE", 
-            "minimum": 1
-          },
-          "description": "Number of items to retrieve per page"
+          "description": "The ID of the agent"
         }
       ],
-      "tags": [
-        "Interactions"
-    ],
-      "responses": {
-        "200": {
-          "description": "Successful response with interaction history",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "user_id": {
-                      "type": "string",
-                      "description": "The ID of the user"
-                    },
-                    "prompt": {
-                      "type": "string",
-                      "description": "The prompt for the interaction"
-                    },
-                    "messages": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "role": {
-                            "type": "string",
-                            "description": "The role of the message sender"
-                          },
-                          "content": {
-                            "type": "string",
-                            "description": "The content of the message"
-                          },
-                          "timestamp": {
-                            "type": "string",
-                            "format": "date-time",
-                            "description": "The timestamp of the message"
-                          }
-                        }
-                      },
-                      "description": "The messages exchanged in the interaction"
-                    },
-                    "response": {
-                      "type": "string",
-                      "description": "The response generated by the agent"
-                    }, 
-                    "reference_kbdoc_ids": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "description": "Reference KB doc ids"
-                    },
-                    "created_timestamp": {
-                      "type": "string",
-                      "format": "date-time",
-                      "description": "The timestamp when the interaction was created"
-                    },
-                    "received_timestamp": {
-                      "type": "string",
-                      "format": "date-time",
-                      "description": "The timestamp when the response was received"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Internal server error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Error"
-              }
-            }
-          }
-        }
-      }
-    },
-    "post": {
-      "summary": "Endpoint to handle agent interactions",
-      "description": "This endpoint allows users to interact with a conversational agent.",
-      "requestBody": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/InteractionRequest"
-            }
-          }
-        }
-      },
-      "tags": [
-        "Interactions"
-    ],
-      "responses": {
-        "200": {
-          "description": "Successful interaction",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InteractionResponse"
-              }
-            }
-          }
-        },
-        "400": {
-          "description": "Bad request",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Error"
-              }
-            }
-          }
-        },
-        "401": {
-          "description": "Unauthorized",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Error"
-              }
-            }
-          }
-        },
-        "403": {
-          "description": "Forbidden",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Error"
-              }
-            }
-          }
-        },
-        "404": {
-          "description": "Agent not found",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Error"
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Internal server error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Error"
-              }
-            }
-          }
-        }
-      }
-    },
-    "options": {
-      "summary": "Handle CORS preflight requests",
-      "tags": [
-        "Interactions"
-    ],
-      "responses": {
-        "200": {
-          "description": "Successful preflight response",
-          "headers": {
-            "Access-Control-Allow-Origin": {
-              "schema": {
-                "type": "string"
-              },
-              "description": "Access-Control-Allow-Origin header"
-            },
-            "Access-Control-Allow-Methods": {
-              "schema": {
-                "type": "string"
-              },
-              "description": "Access-Control-Allow-Methods header"
-            },
-            "Content-Type": {
-              "schema": {
-                "type": "string"
-              },
-              "description": "Content-Type header"
-            }
-          }
-        }
-      }
-    }
-  },
-  "/v1/agents/{agent_id}/kb": {
-    "get": {
-        "summary": "List all knowledge base documents for a specific agent.",
+      "get": {
+        "summary": "Get the interaction history for a specific agent",
         "parameters": [
-            {
-                "in": "path",
-                "name": "agent_id",
-                "required": true,
-                "schema": {
-                    "type": "string"
-                }
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1,
+              "minimum": 1
             },
-            {
-                "in": "query",
-                "name": "kbdoc_ids",
-                "required": false,
-                "description": "A comma-separated list of kbdoc IDs to retrieve. If not provided, all kbdocs for the agent will be retrieved.",
-                "schema": {
-                    "type": "string"
-                }
-            }
+            "description": "Page number for pagination"
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": "DEFAULT_PAGE_SIZE",
+              "minimum": 1
+            },
+            "description": "Number of items to retrieve per page"
+          }
         ],
         "tags": [
-            "Kb"
+          "Interactions"
         ],
         "responses": {
-            "200": {
-                "description": "The documents were successfully retrieved.",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "kbdoc_id": {
-                                        "type": "string"
-                                    },
-                                    "is_extracted": {
-                                        "type": "boolean"
-                                    },
-                                    "is_indexed": {
-                                        "type": "boolean"
-                                    },
-                                    "agent_id": {
-                                        "type": "string"
-                                    },
-                                    "filename": {
-                                        "type": "string"
-                                    },
-                                    "source_url": {
-                                        "type": "string"
-                                    },
-                                    "title": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "403": {
-                "description": "Unauthorized access."
-            },
-            "400": {
-                "description": "There was an issue with the request."
-            }
-        }
-    },
-    "delete": {
-      "summary": "Delete all kbdocs of the agent",
-      "description": "Deletes all kbdocs associated with the specified agent from the database.",
-      "tags": [
-        "Kb"
-    ],
-      "parameters": [
-        {
-          "name": "agent_id",
-          "in": "path",
-          "description": "The ID of the agent",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "KB documents deleted successfully",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string",
-                    "description": "Success message"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Internal server error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string",
-                    "description": "Error message"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-},
-"/v1/agents/{agent_id}/kb/{kbdoc_id}": {
-  "delete": {
-      "summary": "Delete a specific knowledge base document.",
-      "parameters": [
-          {
-              "in": "path",
-              "name": "agent_id",
-              "required": true,
-              "schema": {
-                  "type": "string"
-              }
-          },
-          {
-              "in": "path",
-              "name": "kbdoc_id",
-              "required": true,
-              "schema": {
-                  "type": "string"
-              }
-          }
-      ],
-      "tags": [
-          "Kb"
-      ],
-      "responses": {
           "200": {
-              "description": "The document was successfully deleted."
-          },
-          "403": {
-              "description": "Unauthorized access."
+            "description": "Successful response with interaction history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "user_id": {
+                        "type": "string",
+                        "description": "The ID of the user"
+                      },
+                      "prompt": {
+                        "type": "string",
+                        "description": "The prompt for the interaction"
+                      },
+                      "messages": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "role": {
+                              "type": "string",
+                              "description": "The role of the message sender"
+                            },
+                            "content": {
+                              "type": "string",
+                              "description": "The content of the message"
+                            },
+                            "timestamp": {
+                              "type": "string",
+                              "format": "date-time",
+                              "description": "The timestamp of the message"
+                            }
+                          }
+                        },
+                        "description": "The messages exchanged in the interaction"
+                      },
+                      "response": {
+                        "type": "string",
+                        "description": "The response generated by the agent"
+                      },
+                      "reference_kbdoc_ids": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Reference KB doc ids"
+                      },
+                      "created_timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The timestamp when the interaction was created"
+                      },
+                      "received_timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The timestamp when the response was received"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-              "description": "There was a server error."
-          }
-      }
-  }
-},
-  "/v1/agents/{agent_id}/kb/file": {
-    "post": {
-      "summary": "Upload a file to the agent's knowledge base.",
-      "parameters": [
-        {
-          "in": "path",
-          "name": "agent_id",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "tags": [
-        "Kb"
-    ],
-      "requestBody": {
-        "required": true,
-        "content": {
-          "multipart/form-data": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "file": {
-                  "type": "string",
-                  "format": "binary"
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           }
         }
       },
-      "responses": {
-        "200": {
-          "description": "The file was successfully uploaded and processed.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  },
-                  "kbdoc_id": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "400": {
-          "description": "There was an issue with the request, No file part in the request, No selected file, or Unsupported file type.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  },
-                  "kbdoc_id": {
-                    "type": "string",
-                    "nullable": true
-                  }
-                }
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "There was a server error, Error creating kbdoc, Failed to upload file, Failed to extract kbdoc or Failed to process kbdoc.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  },
-                  "kbdoc_id": {
-                    "type": "string",
-                    "nullable": true
-                  }
-                }
-              }
-            }
-          }
-        },
-        "403": {
-          "description": "Unauthorized access."
-        }
-      }
-    }
-  },
-  "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}/crawl": {
-    "get": {
-      "summary": "Crawl URLs",
-      "parameters": [
-        {
-          "name": "agent_id",
-          "in": "path",
+      "post": {
+        "summary": "Endpoint to handle agent interactions",
+        "description": "This endpoint allows users to interact with a conversational agent.",
+        "requestBody": {
           "required": true,
-          "description": "The ID of the agent",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "scrapedomain_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the scrapedomain",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "timeout",
-          "in": "query",
-          "required": false,
-          "description": "The timeout for the crawl in seconds, default is 180 seconds",
-          "schema": {
-            "type": "integer",
-            "default": 180
-          }
-        }
-      ],
-      "tags": [
-        "Crawl/Scrape"
-    ],
-      "responses": {
-        "200": {
-          "description": "Successful operation",
-          "content": {
-            "text/plain": {
-              "schema": {
-                "type": "string"
-                }
-            }
-          }
-        },
-        "404": {
-          "description": "Document not found",
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
+                "$ref": "#/components/schemas/InteractionRequest"
+              }
+            }
+          }
+        },
+        "tags": [
+          "Interactions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful interaction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InteractionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
                 }
               }
             }
           }
         }
-      }
-    }
-  },
-  "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap_urls": {
-    "get": {
-      "summary": "Get URLs from sitemaps",
-      "parameters": [
-        {
-          "name": "agent_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the agent",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "scrapedomain_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the scrapedomain",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "tags": [
-        "Crawl/Scrape"
-    ],
-      "responses": {
-        "200": {
-          "description": "Successful operation",
-          "content": {
-            "text/plain": {
-              "schema": {
-                "type": "string"
-                }
-            }
-          }
-        },
-        "404": {
-          "description": "Document not found",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap": {
-    "get": {
-      "summary": "Retrieve the sitemap from the specified scrapedomain",
-      "parameters": [
-        {
-          "name": "agent_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the agent",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "scrapedomain_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the scrapedomain",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "tags": [
-        "Crawl/Scrape"
-      ],
-      "responses": {
-        "200": {
-          "description": "Successfully retrieved the sitemap",
-          "content": {
-            "application/xml": {
-              "example": "<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'><url><loc>http://www.example.com/</loc></url></urlset>",
-              "schema": {
-                "type": "string",
-                "format": "xml"
-              }
-            }
-          }
-        },
-        "404": {
-          "description": "Sitemap or document not found",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
+      },
+      "options": {
+        "summary": "Handle CORS preflight requests",
+        "tags": [
+          "Interactions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful preflight response",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
                 },
-                "example": {
-                  "message": "Sitemap not found!"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "/v1/agents/{agent_id}/scrapedomains": {
-    "post": {
-      "summary": "Create Scrapedomain",
-      "parameters": [
-        {
-          "name": "agent_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the agent",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "tags": [
-        "Crawl/Scrape"
-    ],
-      "requestBody": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "domain_url": {
-                  "type": "string",
-                  "format": "url",
-                  "description": "URL of the domain to be scraped",
-                  "example": "https://www.example.com"
-                },
-                "info_email": {
-                  "type": "string",
-                  "format": "email",
-                  "description": "Email associated with the domain",
-                  "example": "info@example.com"
-                },
-                "sitemap_url_exclude_strings": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "description": "List of strings to exclude from the sitemap URLs"
-                },
-                "url_exclude_strings": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "description": "List of strings to exclude from the crawled URLs"
-                }
+                "description": "Access-Control-Allow-Origin header"
               },
-              "required": ["domain_url"]
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Access-Control-Allow-Methods header"
+              },
+              "Content-Type": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Content-Type header"
+              }
             }
           }
         }
+      }
+    },
+    "/v1/agents/{agent_id}/kb": {
+      "get": {
+        "summary": "List all knowledge base documents for a specific agent.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "kbdoc_ids",
+            "required": false,
+            "description": "A comma-separated list of kbdoc IDs to retrieve. If not provided, all kbdocs for the agent will be retrieved.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Kb"
+        ],
+        "responses": {
+          "200": {
+            "description": "The documents were successfully retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "kbdoc_id": {
+                        "type": "string"
+                      },
+                      "is_extracted": {
+                        "type": "boolean"
+                      },
+                      "is_indexed": {
+                        "type": "boolean"
+                      },
+                      "agent_id": {
+                        "type": "string"
+                      },
+                      "filename": {
+                        "type": "string"
+                      },
+                      "source_url": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access."
+          },
+          "400": {
+            "description": "There was an issue with the request."
+          }
+        }
       },
-      "responses": {
-        "200": {
-          "description": "Successful operation",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "scrapedomain_id": {
-                    "type": "string"
+      "delete": {
+        "summary": "Delete all kbdocs of the agent",
+        "description": "Deletes all kbdocs associated with the specified agent from the database.",
+        "tags": [
+          "Kb"
+        ],
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "description": "The ID of the agent",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "KB documents deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Success message"
+                    }
                   }
                 }
               }
             }
-          }
-        },
-        "400": {
-          "description": "Validation error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Document creation failed",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Error message"
+                    }
                   }
                 }
               }
@@ -1131,30 +729,666 @@
         }
       }
     },
-    "get": {
-      "summary": "Get all Scrapedomains",
-      "parameters": [
-        {
-          "name": "agent_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the agent",
-          "schema": {
-            "type": "string"
+    "/v1/agents/{agent_id}/kb/{kbdoc_id}": {
+      "delete": {
+        "summary": "Delete a specific knowledge base document.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "kbdoc_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Kb"
+        ],
+        "responses": {
+          "200": {
+            "description": "The document was successfully deleted."
+          },
+          "403": {
+            "description": "Unauthorized access."
+          },
+          "500": {
+            "description": "There was a server error."
           }
         }
-      ],
-      "tags": [
-        "Crawl/Scrape"
-    ],
-      "responses": {
-        "200": {
-          "description": "Successful operation",
+      }
+    },
+    "/v1/agents/{agent_id}/kb/file": {
+      "post": {
+        "summary": "Upload a file to the agent's knowledge base.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Kb"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The file was successfully uploaded and processed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "kbdoc_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "There was an issue with the request, No file part in the request, No selected file, or Unsupported file type.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "kbdoc_id": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "There was a server error, Error creating kbdoc, Failed to upload file, Failed to extract kbdoc or Failed to process kbdoc.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "kbdoc_id": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Unauthorized access."
+          }
+        }
+      }
+    },
+    "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}/crawl": {
+      "get": {
+        "summary": "Crawl URLs",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scrapedomain_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the scrapedomain",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "timeout",
+            "in": "query",
+            "required": false,
+            "description": "The timeout for the crawl in seconds, default is 180 seconds",
+            "schema": {
+              "type": "integer",
+              "default": 180
+            }
+          }
+        ],
+        "tags": [
+          "Crawl/Scrape"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap_urls": {
+      "get": {
+        "summary": "Get URLs from sitemaps",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scrapedomain_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the scrapedomain",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Crawl/Scrape"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}/sitemap": {
+      "get": {
+        "summary": "Retrieve the sitemap from the specified scrapedomain",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scrapedomain_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the scrapedomain",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Crawl/Scrape"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the sitemap",
+            "content": {
+              "application/xml": {
+                "example": "<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'><url><loc>http://www.example.com/</loc></url></urlset>",
+                "schema": {
+                  "type": "string",
+                  "format": "xml"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sitemap or document not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Sitemap not found!"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agents/{agent_id}/scrapedomains": {
+      "post": {
+        "summary": "Create Scrapedomain",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the agent",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Crawl/Scrape"
+        ],
+        "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
+                "type": "object",
+                "properties": {
+                  "domain_url": {
+                    "type": "string",
+                    "format": "url",
+                    "description": "URL of the domain to be scraped",
+                    "example": "https://www.example.com"
+                  },
+                  "info_email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email associated with the domain",
+                    "example": "info@example.com"
+                  },
+                  "sitemap_url_exclude_strings": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of strings to exclude from the sitemap URLs"
+                  },
+                  "url_exclude_strings": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of strings to exclude from the crawled URLs"
+                  }
+                },
+                "required": [
+                  "domain_url"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "scrapedomain_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Document creation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all Scrapedomains",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the agent",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Crawl/Scrape"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "agent_id": {
+                        "type": "string"
+                      },
+                      "domain_url": {
+                        "type": "string",
+                        "format": "url"
+                      },
+                      "info_email": {
+                        "type": "string",
+                        "format": "email"
+                      },
+                      "sitemap_url_exclude_strings": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "url_exclude_strings": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No scrapedomains found for this agent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error fetching data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}": {
+      "put": {
+        "summary": "Update Scrapedomain",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scrapedomain_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the scrapedomain",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Crawl/Scrape"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "domain_url": {
+                    "type": "string",
+                    "format": "url",
+                    "description": "URL of the domain to be scraped"
+                  },
+                  "info_email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Email associated with the domain"
+                  },
+                  "sitemap_url_exclude_strings": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of strings to exclude from the sitemap URLs"
+                  },
+                  "url_exclude_strings": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "List of strings to exclude from the crawled URLs"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error updating document",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get Scrapedomain",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scrapedomain_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the scrapedomain",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Crawl/Scrape"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
                   "type": "object",
                   "properties": {
                     "agent_id": {
@@ -1184,157 +1418,105 @@
                 }
               }
             }
-          }
-        },
-        "404": {
-          "description": "No scrapedomains found for this agent",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
+          },
+          "404": {
+            "description": "Document not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
-          }
-        },
-        "500": {
-          "description": "Error fetching data",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
+          },
+          "500": {
+            "description": "Error fetching data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
                   }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "/v1/agents/{agent_id}/scrapedomains/{scrapedomain_id}": {
-    "put": {
-      "summary": "Update Scrapedomain",
-      "parameters": [
-        {
-          "name": "agent_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the agent",
-          "schema": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "scrapedomain_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the scrapedomain",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "tags": [
-        "Crawl/Scrape"
-    ],
-      "requestBody": {
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "domain_url": {
-                  "type": "string",
-                  "format": "url",
-                  "description": "URL of the domain to be scraped"
-                },
-                "info_email": {
-                  "type": "string",
-                  "format": "email",
-                  "description": "Email associated with the domain"
-                },
-                "sitemap_url_exclude_strings": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "description": "List of strings to exclude from the sitemap URLs"
-                },
-                "url_exclude_strings": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "description": "List of strings to exclude from the crawled URLs"
                 }
               }
             }
           }
         }
       },
-      "responses": {
-        "200": {
-          "description": "Successful operation",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
+      "delete": {
+        "summary": "Delete Scrapedomain",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the agent",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scrapedomain_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the scrapedomain",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Crawl/Scrape"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
-          }
-        },
-        "400": {
-          "description": "Validation error",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
+          },
+          "404": {
+            "description": "Document not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
-          }
-        },
-        "404": {
-          "description": "Document not found",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "500": {
-          "description": "Error updating document",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
+          },
+          "500": {
+            "description": "Error deleting document",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
                   }
                 }
               }
@@ -1343,57 +1525,30 @@
         }
       }
     },
-    "get": {
-      "summary": "Get Scrapedomain",
-      "parameters": [
-        {
-          "name": "agent_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the agent",
-          "schema": {
-            "type": "string"
+    "/v1/agents/{agent_id}/kb/url": {
+      "post": {
+        "summary": "Create a URL knowledge base document.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        },
-        {
-          "name": "scrapedomain_id",
-          "in": "path",
+        ],
+        "tags": [
+          "Kb"
+        ],
+        "requestBody": {
           "required": true,
-          "description": "The ID of the scrapedomain",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "tags": [
-        "Crawl/Scrape"
-    ],
-      "responses": {
-        "200": {
-          "description": "Successful operation",
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "agent_id": {
-                    "type": "string"
-                  },
-                  "domain_url": {
-                    "type": "string",
-                    "format": "url"
-                  },
-                  "info_email": {
-                    "type": "string",
-                    "format": "email"
-                  },
-                  "sitemap_url_exclude_strings": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
-                  "url_exclude_strings": {
+                  "urls": {
                     "type": "array",
                     "items": {
                       "type": "string"
@@ -1404,104 +1559,170 @@
             }
           }
         },
-        "404": {
-          "description": "Document not found",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
+        "responses": {
+          "200": {
+            "description": "The URL KB documents were successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "type": "string"
+                      },
+                      "kbdoc_id": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string",
+                        "enum": [
+                          "created",
+                          "existing"
+                        ]
+                      }
+                    }
                   }
                 }
               }
             }
-          }
-        },
-        "500": {
-          "description": "Error fetching data",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
+          },
+          "400": {
+            "description": "There was an issue with the request."
+          },
+          "403": {
+            "description": "Unauthorized access."
           }
         }
       }
     },
-    "delete": {
-      "summary": "Delete Scrapedomain",
-      "parameters": [
-        {
-          "name": "agent_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the agent",
-          "schema": {
-            "type": "string"
+    "/v1/agents/{agent_id}/kb/urls/scrape": {
+      "post": {
+        "summary": "Scrape URLs and add them to the knowledge base.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "agent_id",
+            "required": true,
+            "description": "The ID of the agent",
+            "schema": {
+              "type": "string"
+            }
           }
-        },
-        {
-          "name": "scrapedomain_id",
-          "in": "path",
-          "required": true,
-          "description": "The ID of the scrapedomain",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "tags": [
-        "Crawl/Scrape"
-    ],
-      "responses": {
-        "200": {
-          "description": "Successful operation",
+        ],
+        "tags": [
+          "Kb"
+        ],
+        "requestBody": {
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "message": {
-                    "type": "string"
+                  "urls": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "The URLs to be scraped"
+                  },
+                  "loader_type": {
+                    "type": "string",
+                    "enum": [
+                      "unstructured",
+                      "selenium",
+                      "webbase"
+                    ],
+                    "description": "The type of the loader to be used for scraping"
                   }
-                }
+                },
+                "required": [
+                  "urls"
+                ]
               }
             }
           }
         },
-        "404": {
-          "description": "Document not found",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
+        "responses": {
+          "200": {
+            "description": "URLs were successfully scraped and added to the knowledge base",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "A message about the status of the operation"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "kbdoc_id": {
+                            "type": "string",
+                            "description": "The ID of the created KB doc"
+                          },
+                          "status": {
+                            "type": "string",
+                            "description": "The status of the scraping operation"
+                          },
+                          "error": {
+                            "type": "string",
+                            "description": "The error message if the scraping operation failed"
+                          }
+                        },
+                        "required": [
+                          "kbdoc_id",
+                          "status"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "data"
+                  ]
                 }
               }
             }
-          }
-        },
-        "500": {
-          "description": "Error deleting document",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string"
-                  }
+          },
+          "400": {
+            "description": "Invalid request data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "An error message"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An error occurred while scraping URLs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "An error message"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
                 }
               }
             }
@@ -1510,492 +1731,363 @@
       }
     }
   },
-  "/v1/agents/{agent_id}/kb/urls/scrape": {
-    "post": {
-      "summary": "Scrape URLs and add them to the knowledge base.",
-      "parameters": [
-        {
-          "in": "path",
-          "name": "agent_id",
-          "required": true,
-          "description": "The ID of the agent",
-          "schema": {
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "UpdateAgentRequest": {
+        "type": "object",
+        "properties": {
+          "agent_name": {
+            "type": "string"
+          },
+          "chunk_size": {
+            "type": "integer"
+          },
+          "chunk_overlap": {
+            "type": "integer"
+          },
+          "model_name": {
+            "type": "string"
+          },
+          "temperature": {
+            "type": "number"
+          },
+          "max_response_tokens": {
+            "type": "integer"
+          },
+          "stop": {
+            "type": "string"
+          },
+          "script": {
+            "type": "string"
+          },
+          "assistant_name": {
+            "type": "string"
+          },
+          "intro": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "default_locale": {
+            "type": "string",
+            "description": "Default language code for the agent"
+          },
+          "sitelogo_url_or_svg": {
+            "type": "string"
+          },
+          "status": {
             "type": "string"
           }
         }
-      ],
-      "tags": [
-        "Kb"
-    ],
-      "requestBody": {
-        "content": {
-          "application/json": {
-            "schema": {
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "InteractionRequest": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "The user prompt"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HistoryItem"
+            },
+            "description": "List of history items"
+          },
+          "model_name": {
+            "type": "string",
+            "description": "The name of the model"
+          },
+          "temperature": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "The temperature for generating responses"
+          },
+          "max_response_tokens": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The maximum number of response tokens"
+          },
+          "context_ratio_limit": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0.7,
+            "description": "The context ratio limit"
+          },
+          "dfp": {
+            "type": "string",
+            "description": "The DFP value"
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      },
+      "HistoryItem": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "The role of the history item"
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the history item"
+          }
+        },
+        "required": [
+          "role",
+          "content"
+        ]
+      },
+      "InteractionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the response"
+          },
+          "object": {
+            "type": "string",
+            "description": "The object type"
+          },
+          "created_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The created timestamp of the response"
+          },
+          "model": {
+            "type": "string",
+            "description": "The model used for the response"
+          },
+          "usage": {
+            "type": "object",
+            "description": "The usage statistics"
+          },
+          "finish_reason": {
+            "type": "string",
+            "description": "The finish reason of the response"
+          },
+          "answer": {
+            "type": "string",
+            "description": "The response message"
+          },
+          "reference_kbdoc_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Reference KB doc ids"
+          },
+          "references": {
+            "type": "array",
+            "items": {
               "type": "object",
               "properties": {
-                "urls": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "description": "The URLs to be scraped"
-                },
-                "loader_type": {
+                "kbdoc_id": {
                   "type": "string",
-                  "enum": [
-                    "unstructured",
-                    "selenium",
-                    "webbase"
-                  ],
-                  "description": "The type of the loader to be used for scraping"
+                  "description": "The ID of the knowledge base document"
+                },
+                "chunk_in_kbdoc": {
+                  "type": "string",
+                  "description": "The chunk in the knowledge base document"
+                }
+              }
+            },
+            "description": "Details of the sources referred in the response"
+          },
+          "received_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The received timestamp of the response"
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "created_timestamp",
+          "model",
+          "usage",
+          "finish_reason",
+          "response_message",
+          "reference_kbdoc_ids",
+          "received_timestamp"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "AgentListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/AgentInfo"
+        },
+        "description": "List of agents"
+      },
+      "AgentInfo": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "description": "The ID of the agent"
+          },
+          "parameters": {
+            "type": "object",
+            "description": "Agent parameters",
+            "properties": {
+              "agent_name": {
+                "type": "string"
+              },
+              "chunk_size": {
+                "type": "integer",
+                "default": 400
+              },
+              "chunk_overlap": {
+                "type": "integer",
+                "default": 0
+              },
+              "openai_api_key": {
+                "type": "string"
+              },
+              "model_name": {
+                "type": "string",
+                "enum": [
+                  "gpt-3.5-turbo",
+                  "gpt-3.5-turbo-16k",
+                  "gpt-4",
+                  "gpt-4-32k"
+                ],
+                "default": "gpt-3.5-turbo"
+              },
+              "temperature": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0
+              },
+              "max_response_tokens": {
+                "type": "integer",
+                "minimum": 0,
+                "default": 800
+              },
+              "stop": {
+                "type": "string"
+              },
+              "script": {
+                "type": "string"
+              },
+              "assistant_name": {
+                "type": "string"
+              },
+              "intro": {
+                "type": "object",
+                "properties": {
+                  "en": {
+                    "type": "string"
+                  }
                 }
               },
-              "required": [
-                "urls"
-              ]
+              "default_locale": {
+                "type": "string",
+                "description": "Default language code for the agent",
+                "default": "en"
+              },
+              "sitelogo_url_or_svg": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "description": "The status of the agent"
+              }
             }
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileInfo"
+            },
+            "description": "List of uploaded files"
+          },
+          "urls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScrapedUrlInfo"
+            },
+            "description": "List of scraped URLs"
           }
         }
       },
-      "responses": {
-        "200": {
-          "description": "URLs were successfully scraped and added to the knowledge base",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string",
-                    "description": "A message about the status of the operation"
-                  },
-                  "data": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "kbdoc_id": {
-                          "type": "string",
-                          "description": "The ID of the created KB doc"
-                        },
-                        "status": {
-                          "type": "string",
-                          "description": "The status of the scraping operation"
-                        },
-                        "error": {
-                          "type": "string",
-                          "description": "The error message if the scraping operation failed"
-                        }
-                      },
-                      "required": [
-                        "kbdoc_id",
-                        "status"
-                      ]
-                    }
-                  }
-                },
-                "required": [
-                  "message",
-                  "data"
-                ]
-              }
-            }
+      "FileInfo": {
+        "type": "object",
+        "properties": {
+          "kbdoc_id": {
+            "type": "string",
+            "description": "The ID of the file"
+          },
+          "filename": {
+            "type": "string",
+            "description": "The name of the file"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp when the file was created"
           }
-        },
-        "400": {
-          "description": "Invalid request data",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string",
-                    "description": "An error message"
-                  }
-                },
-                "required": [
-                  "message"
-                ]
-              }
-            }
+        }
+      },
+      "ScrapedUrlInfo": {
+        "type": "object",
+        "properties": {
+          "kbdoc_id": {
+            "type": "string",
+            "description": "The ID of the scraped URL"
+          },
+          "url": {
+            "type": "string",
+            "description": "The URL"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp when the URL was scraped"
           }
-        },
-        "500": {
-          "description": "An error occurred while scraping URLs",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "message": {
-                    "type": "string",
-                    "description": "An error message"
-                  }
-                },
-                "required": [
-                  "message"
-                ]
-              }
-            }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "The status of the request"
+          },
+          "message": {
+            "type": "string",
+            "description": "The error message"
           }
         }
       }
     }
   }
-},
-"components": {
-  "securitySchemes": {
-    "ApiKeyAuth": {
-      "type": "http",
-      "scheme": "bearer",
-      "bearerFormat": "JWT"
-    }
-  },
-  "schemas": {
-    "UpdateAgentRequest": {
-      "type": "object",
-      "properties": {
-        "agent_name": {
-          "type": "string"
-        },
-        "chunk_size": {
-          "type": "integer"
-        },
-        "chunk_overlap": {
-          "type": "integer"
-        },
-        "model_name": {
-          "type": "string"
-        },
-        "temperature": {
-          "type": "number"
-        },
-        "max_response_tokens": {
-          "type": "integer"
-        },
-        "stop": {
-          "type": "string"
-        },
-        "script": {
-          "type": "string"
-        },
-        "assistant_name": {
-          "type": "string"
-        },
-        "intro": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "default_locale": {
-          "type": "string",
-          "description": "Default language code for the agent"
-        },
-        "sitelogo_url_or_svg": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
-        }
-      }
-    },
-    "SuccessResponse": {
-      "type": "object",
-      "properties": {
-        "message": {
-          "type": "string"
-        }
-      }
-    },
-    "InteractionRequest": {
-      "type": "object",
-      "properties": {
-        "prompt": {
-          "type": "string",
-          "description": "The user prompt"
-        },
-        "history": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/HistoryItem"
-          },
-          "description": "List of history items"
-        },
-        "model_name": {
-          "type": "string",
-          "description": "The name of the model"
-        },
-        "temperature": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 1,
-          "description": "The temperature for generating responses"
-        },
-        "max_response_tokens": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "The maximum number of response tokens"
-        },
-        "context_ratio_limit": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 0.7,
-          "description": "The context ratio limit"
-        },
-        "dfp": {
-          "type": "string",
-          "description": "The DFP value"
-        }
-      },
-      "required": [
-        "prompt"
-      ]
-    },
-    "HistoryItem": {
-      "type": "object",
-      "properties": {
-        "role": {
-          "type": "string",
-          "description": "The role of the history item"
-        },
-        "content": {
-          "type": "string",
-          "description": "The content of the history item"
-        }
-      },
-      "required": [
-        "role",
-        "content"
-      ]
-    },
-    "InteractionResponse": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "The ID of the response"
-        },
-        "object": {
-          "type": "string",
-          "description": "The object type"
-        },
-        "created_timestamp": {
-          "type": "string",
-          "format": "date-time",
-          "description": "The created timestamp of the response"
-        },
-        "model": {
-          "type": "string",
-          "description": "The model used for the response"
-        },
-        "usage": {
-          "type": "object",
-          "description": "The usage statistics"
-        },
-        "finish_reason": {
-          "type": "string",
-          "description": "The finish reason of the response"
-        },
-        "answer": {
-          "type": "string",
-          "description": "The response message"
-        },
-        "reference_kbdoc_ids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Reference KB doc ids"
-        },
-        "references": {
-          "type": "array",
-          "items": {
-              "type": "object",
-              "properties": {
-                  "kbdoc_id": {
-                      "type": "string",
-                      "description": "The ID of the knowledge base document"
-                  },
-                  "chunk_in_kbdoc": {
-                      "type": "string",
-                      "description": "The chunk in the knowledge base document"
-                  }
-              }
-          },
-          "description": "Details of the sources referred in the response"
-        },
-        "received_timestamp": {
-          "type": "string",
-          "format": "date-time",
-          "description": "The received timestamp of the response"
-        }
-      },
-      "required": [
-        "id",
-        "object",
-        "created_timestamp",
-        "model",
-        "usage",
-        "finish_reason",
-        "response_message",
-        "reference_kbdoc_ids",
-        "received_timestamp"
-      ]
-    },  
-    "ErrorResponse": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string"
-        }
-      }
-    },
-    "AgentListResponse": {
-      "type": "array",
-      "items": {
-        "$ref": "#/components/schemas/AgentInfo"
-      },
-      "description": "List of agents"
-    },
-    "AgentInfo": {
-      "type": "object",
-      "properties": {
-        "agent_id": {
-          "type": "string",
-          "description": "The ID of the agent"
-        },
-        "parameters": {
-          "type": "object",
-          "description": "Agent parameters",
-          "properties": {
-            "agent_name": {
-              "type": "string"
-            },
-            "chunk_size": {
-              "type": "integer",
-              "default": 400
-            },
-            "chunk_overlap": {
-              "type": "integer",
-              "default": 0
-            },
-            "openai_api_key": {
-              "type": "string"
-            },
-            "model_name": {
-              "type": "string",
-              "enum": ["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"],
-              "default": "gpt-3.5-turbo"
-            },
-            "temperature": {
-              "type": "number",
-              "minimum": 0,
-              "maximum": 1,
-              "default": 0
-            },
-            "max_response_tokens": {
-              "type": "integer",
-              "minimum": 0,
-              "default": 800
-            },
-            "stop": {
-              "type": "string"
-            },
-            "script": {
-              "type": "string"
-            },
-            "assistant_name": {
-              "type": "string"
-            },
-            "intro": {
-              "type": "object",
-              "properties": {
-                "en": {
-                  "type": "string"
-                }
-              }
-            },
-            "default_locale": {
-              "type": "string",
-              "description": "Default language code for the agent",
-              "default": "en"
-            },
-            "sitelogo_url_or_svg": {
-              "type": "string"
-            },
-            "status": {
-              "type": "string",
-              "description": "The status of the agent"
-            }
-          }
-        },
-        "files": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/FileInfo"
-          },
-          "description": "List of uploaded files"
-        },
-        "urls": {
-          "type": "array",
-          "items": {
-            "$ref": "#/components/schemas/ScrapedUrlInfo"
-          },
-          "description": "List of scraped URLs"
-        }
-      }
-    },
-    "FileInfo": {
-      "type": "object",
-      "properties": {
-        "kbdoc_id": {
-          "type": "string",
-          "description": "The ID of the file"
-        },
-        "filename": {
-          "type": "string",
-          "description": "The name of the file"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time",
-          "description": "The timestamp when the file was created"
-        }
-      }
-    },
-    "ScrapedUrlInfo": {
-      "type": "object",
-      "properties": {
-        "kbdoc_id": {
-          "type": "string",
-          "description": "The ID of the scraped URL"
-        },
-        "url": {
-          "type": "string",
-          "description": "The URL"
-        },
-        "created_at": {
-          "type": "string",
-          "format": "date-time",
-          "description": "The timestamp when the URL was scraped"
-        }
-      }
-    },
-    "Error": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "string",
-          "description": "The status of the request"
-        },
-        "message": {
-          "type": "string",
-          "description": "The error message"
-        }
-      }
-    }
-  }
-}
 }
