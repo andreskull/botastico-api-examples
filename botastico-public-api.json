@@ -266,7 +266,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SuccessResponse"
+                  "$ref": "#/components/schemas/UpdatedAgentResponse"
                 }
               }
             }
@@ -1788,6 +1788,45 @@
           }
         }
       },
+      "UpdatedAgentResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Success message"
+          },
+          "agent": {
+            "$ref": "#/components/schemas/AgentData"
+          }
+        }
+      },
+      "AgentData": {
+        "type": "object",
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "description": "The ID of the agent"
+          },
+          "parameters": {
+            "type": "object",
+            "description": "The parameters of the agent"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "The files associated with the agent"
+          },
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "The URLs associated with the agent"
+          }
+        }
+      },  
       "SuccessResponse": {
         "type": "object",
         "properties": {
