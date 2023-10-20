@@ -1873,6 +1873,11 @@
           "dfp": {
             "type": "string",
             "description": "The DFP value"
+          },
+          "streaming": {
+            "type": "boolean",
+            "description": "Is it streaming?",
+            "default": false
           }
         },
         "required": [
