@@ -6,12 +6,8 @@
   },
   "servers": [
     {
-      "url": "https://botastico-api-staging-3qrwuust2a-nw.a.run.app",
-      "description": "Staging server"
-    },
-    {
-      "url": "https://botastico-api-production-3qrwuust2a-nw.a.run.app",
-      "description": "Production server"
+      "url": "https://api.botasti.co",
+      "description": "Botastico API server"
     }
   ],
   "security": [
@@ -1729,7 +1725,64 @@
           }
         }
       }
-    }
+    },
+    "/v1/agents/{agent_id}/emails": {
+      "get": {
+        "summary": "Get the interaction history for a specific agent.",
+        "description": "Retrieve the sorted interaction history of emails for a given agent ID, sorted by creation timestamp in descending order.",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the agent whose interaction history is to be retrieved."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "The page number of the results (used for pagination)."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The number of results to return per page."
+          }
+        ],
+        "tags": [
+          "Emails"
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of extracted emails.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExtractedEmail"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error occurred in retrieving the extracted emails."
+          }
+        }
+      }
+    }    
   },
   "components": {
     "securitySchemes": {
@@ -2116,6 +2169,40 @@
             "type": "string",
             "format": "date-time",
             "description": "The timestamp when the URL was scraped"
+          }
+        }
+      },
+      "ExtractedEmail": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The creation timestamp of the email."
+          },
+          "email": {
+            "type": "string",
+            "description": "The extracted email."
+          },
+          "interaction_id": {
+            "type": "string",
+            "description": "The ID of the interaction where the email was extracted."
+          },
+          "agent_id": {
+            "type": "string",
+            "description": "The ID of the agent where the email was extracted."
+          },
+          "user_id": {
+            "type": "string",
+            "description": "The ID of the user where the email was extracted."
+          },
+          "sid": {
+            "type": "string",
+            "description": "The ID of the session where the email was extracted."
+          },
+          "dfp": {
+            "type": "string",
+            "description": "Device fingerprint of the user."
           }
         }
       },
