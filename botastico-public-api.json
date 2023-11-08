@@ -463,6 +463,23 @@
                         },
                         "description": "Reference KB doc ids"
                       },
+                      "references": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "kbdoc_id": {
+                              "type": "string",
+                              "description": "The ID of the knowledge base document"
+                            },
+                            "chunk_in_kbdoc": {
+                              "type": "string",
+                              "description": "The chunk in the knowledge base document"
+                            }
+                          }
+                        },
+                        "description": "Details of the sources referred in the response"
+                      },
                       "created_timestamp": {
                         "type": "string",
                         "format": "date-time",
