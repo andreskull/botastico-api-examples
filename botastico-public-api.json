@@ -430,6 +430,10 @@
                         "type": "string",
                         "description": "The prompt for the interaction"
                       },
+                      "model": {
+                        "type": "string",
+                        "description": "The model used for the interaction"
+                      },
                       "messages": {
                         "type": "array",
                         "items": {
