@@ -694,8 +694,8 @@
         }
       },
       "delete": {
-        "summary": "Delete all kbdocs of the agent",
-        "description": "Deletes all kbdocs associated with the specified agent from the database.",
+        "summary": "Delete kbdocs of the agent",
+        "description": "Deletes kbdocs associated with the specified agent from the database. If kbdoc_ids are provided, deletes only those; otherwise, deletes all kbdocs for the agent.",
         "tags": [
           "Kb"
         ],
@@ -707,6 +707,16 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "kbdoc_ids",
+            "in": "query",
+            "description": "List of kbdoc IDs to delete, separated by commas",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "csv"
             }
           }
         ],
