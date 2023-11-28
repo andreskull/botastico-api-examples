@@ -426,6 +426,10 @@
                         "type": "string",
                         "description": "The ID of the user"
                       },
+                      "dfp": {
+                        "type": "string",
+                        "description": "The device fingerprint of user"
+                      },
                       "prompt": {
                         "type": "string",
                         "description": "The prompt for the interaction"
