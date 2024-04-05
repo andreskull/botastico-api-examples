@@ -175,7 +175,16 @@
                       "webbase"
                     ],
                     "default": "unstructured"
-                  }
+                  },
+                  "embedding_model": {
+                    "type": "string",
+                    "description": "The embedding model used by the agent"
+                  },
+                  "embedding_dim": {
+                    "type": "integer",
+                    "description": "The dimension of the embedding vector used by the model",
+                    "minimum": 1
+                  }                  
                 },
                 "required": [
                   "agent_name"
@@ -497,6 +506,14 @@
                         "type": "string",
                         "format": "date-time",
                         "description": "The timestamp when the response was received"
+                      },
+                      "embedding_model": {
+                        "type": "string",
+                        "description": "The embedding model used by the agent"
+                      },
+                      "embedding_dim": {
+                        "type": "integer",
+                        "description": "The dimension of the embedding vector used by the model"
                       }
                     }
                   }
@@ -1945,7 +1962,16 @@
           },
           "status": {
             "type": "string"
-          }
+          },
+          "embedding_model": {
+            "type": "string",
+            "description": "The embedding model used by the agent"
+          },
+          "embedding_dim": {
+            "type": "integer",
+            "description": "The dimension of the embedding vector used by the model",
+            "minimum": 1
+          }          
         }
       },
       "SearchResult": {
@@ -2056,6 +2082,15 @@
             "type": "boolean",
             "description": "Is it streaming?",
             "default": false
+          },
+          "embedding_model": {
+            "type": "string",
+            "description": "The embedding model used by the agent"
+          },
+          "embedding_dim": {
+            "type": "integer",
+            "description": "The dimension of the embedding vector used by the model",
+            "minimum": 1
           }
         },
         "required": [
@@ -2242,7 +2277,16 @@
               "status": {
                 "type": "string",
                 "description": "The status of the agent"
-              }
+              },
+              "embedding_model": {
+                "type": "string",
+                "description": "The embedding model used by the agent"
+              },
+              "embedding_dim": {
+                "type": "integer",
+                "description": "The dimension of the embedding vector used by the model",
+                "minimum": 1
+              }   
             }
           },
           "files": {
